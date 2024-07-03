@@ -157,46 +157,29 @@ public class TransaccionController {
                 .findFirst()
                 .map(si -> si.getUri().toString())
                 .orElseThrow(() -> new RuntimeException("Banco no esta disponible"));
-
         String cuentaOrigen = transaccionDTO.getCuentaOrigenNumero();
         Optional<Cuenta> cuentaOrigenOp = cuentaService.getCuentaByNumeroCuenta(cuentaOrigen);
-
         if (cuentaOrigenOp.isPresent()) {
             Cuenta cuentaO = cuentaOrigenOp.get();
             if (cuentaO.getSaldo().compareTo(transaccionDTO.getMonto()) < 0) {
                 return new ResponseEntity<>("Saldo insuficiente", HttpStatus.BAD_REQUEST);
             }
             cuentaO.setSaldo(cuentaO.getSaldo().subtract(transaccionDTO.getMonto()));
-
             Instant t1 = Instant.now();
             transaccionDTO.setRequestTime(t1);
-
             try {
-                // Enviar la solicitud de transacción al banco destino
                 ResponseEntity<TransaccionDTO> response = restTemplate.postForEntity(
                         serviceUrl + "/transacciones/external",
                         transaccionDTO,
                         TransaccionDTO.class
                 );
-
                 if (response.getStatusCode() == HttpStatus.CREATED) {
-                    // Marca de tiempo T4 (respuesta recibida)
                     Instant t4 = Instant.now();
                     TransaccionDTO responseBody = response.getBody();
-
-                    // Marca de tiempo T3 del banco destino
                     Instant t3 = responseBody.getResponseTime();
-
-                    // Calcula RTT (round-trip time)
                     Duration rtt = Duration.between(t1, t4);
-
-                    // Tiempo de viaje unidireccional (estimado)
                     Duration oneWayDelay = rtt.dividedBy(2);
-
-                    // Ajuste del tiempo T2 recibido del banco destino
                     Instant t2 = t3.minus(oneWayDelay);
-
-                    // Crear y guardar la transacción con los tiempos ajustados
                     TransaccionExterna transaccionExterna = TransaccionExterna.builder()
                             .cuentaOrigen(transaccionDTO.getCuentaOrigenNumero())
                             .cuentaDestino(transaccionDTO.getCuentaDestinoNumero())
@@ -204,10 +187,9 @@ public class TransaccionController {
                             .tipoTransaccion(TipoTransaccion.TRANSACCION_INTERBANCARIA)
                             .bancoDestino(transaccionDTO.getDestinoBanco())
                             .bancoOrigen(transaccionDTO.getOrigenBanco())
-                            .fecha(Date.from(t2)) // Almacena T2 como fecha ajustada
+                            .fecha(Date.from(t2))
                             .build();
                     transaccionExternaService.saveTransaccion(transaccionExterna);
-
                     return new ResponseEntity<>("Transacción Interbancaria exitosa", HttpStatus.CREATED);
                 } else {
                     return new ResponseEntity<>("Error al registrar la transacción en el banco destino", HttpStatus.INTERNAL_SERVER_ERROR);
