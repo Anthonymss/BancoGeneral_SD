@@ -152,11 +152,24 @@ public class TransaccionController {
     @Transactional
     @PostMapping("/operacionInterbancaria/{banco}")
     public ResponseEntity<?> createTransaccionInterbancaria(@RequestBody TransaccionDTO transaccionDTO, @PathVariable String banco) {
-        String serviceUrl = discoveryClient.getInstances(banco)
-                .stream()
-                .findFirst()
-                .map(si -> si.getUri().toString())
-                .orElseThrow(() -> new RuntimeException("Banco no esta disponible"));
+        String serviceUrl="";
+        switch (banco) {
+            case "banco1" :
+                serviceUrl="https://banco1-bcp.onrender.com/";
+                break;
+            case "banco2" :
+                serviceUrl="https://banco2-intercontinental-1.onrender.com/";
+                break;
+            case "banco3" :
+                serviceUrl="";
+                break;
+            default:
+                serviceUrl = discoveryClient.getInstances(banco)
+                        .stream()
+                        .findFirst()
+                        .map(si -> si.getUri().toString())
+                        .orElseThrow(() -> new RuntimeException("Banco no esta disponible"));
+        }
         String cuentaOrigen = transaccionDTO.getCuentaOrigenNumero();
         Optional<Cuenta> cuentaOrigenOp = cuentaService.getCuentaByNumeroCuenta(cuentaOrigen);
         if (cuentaOrigenOp.isPresent()) {

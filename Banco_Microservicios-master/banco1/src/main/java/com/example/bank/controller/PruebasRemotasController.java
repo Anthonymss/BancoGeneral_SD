@@ -18,11 +18,24 @@ public class PruebasRemotasController {
     private RestTemplate restTemplate;
     @GetMapping("/bank-to-bank/{banco}")
     public String communicateWithBank2(@PathVariable String banco) {
-        String serviceUrl = discoveryClient.getInstances(banco)
-                .stream()
-                .findFirst()
-                .map(si -> si.getUri().toString())
-                .orElseThrow(() -> new RuntimeException("Bank no está disponible"));
+        String serviceUrl="";
+        switch (banco) {
+            case "banco1" :
+                serviceUrl="https://banco1-bcp.onrender.com/";
+                break;
+            case "banco2" :
+                serviceUrl="https://banco2-intercontinental-1.onrender.com/";
+                break;
+            case "banco3" :
+                serviceUrl="";
+                break;
+            default:
+                serviceUrl = discoveryClient.getInstances(banco)
+                        .stream()
+                        .findFirst()
+                        .map(si -> si.getUri().toString())
+                        .orElseThrow(() -> new RuntimeException("Banco no esta disponible"));
+        }
 
         String url = serviceUrl + "/banco/info";
         try {
