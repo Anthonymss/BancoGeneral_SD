@@ -1,0 +1,174 @@
+version: '3.8'
+services:
+  eureka-server:
+    build:
+      context: Banco_Microservicios-master/eureka-server
+      dockerfile: Dockerfile
+    container_name: eureka-server
+    ports:
+      - "8761:8761"
+    networks:
+      - microservices-network
+
+  banco1:
+    build:
+      context: Banco_Microservicios-master/banco1
+      dockerfile: Dockerfile
+    container_name: banco1
+    environment:
+      - EUREKA_SERVER_URL=https://localhost:8761/eureka/
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql-banco1:3306/banco1_db
+      - SPRING_DATASOURCE_USERNAME=banco1_user
+      - SPRING_DATASOURCE_PASSWORD=banco1_pass
+    depends_on:
+      - eureka-server
+      - mysql-banco1
+    ports:
+      - "8081:8081"
+    networks:
+      - microservices-network
+    
+
+  banco2:
+    build:
+      context: Banco_Microservicios-master/banco2
+      dockerfile: Dockerfile
+    container_name: banco2
+    environment:
+      - EUREKA_SERVER_URL=https://localhost:8761/eureka/
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql-banco2:3306/banco2_db
+      - SPRING_DATASOURCE_USERNAME=banco2_user
+      - SPRING_DATASOURCE_PASSWORD=banco2_pass
+    depends_on:
+      - eureka-server
+      - mysql-banco2
+    ports:
+      - "8082:8082"
+    networks:
+      - microservices-network
+
+  banco3:
+    build:
+      context: Banco_Microservicios-master/banco3
+      dockerfile: Dockerfile
+    container_name: banco3
+    environment:
+      - EUREKA_SERVER_URL=https://localhost:8761/eureka/
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql-banco3:3306/banco3_db
+      - SPRING_DATASOURCE_USERNAME=banco3_user
+      - SPRING_DATASOURCE_PASSWORD=banco3_pass
+    depends_on:
+      - eureka-server
+      - mysql-banco3
+    ports:
+      - "8083:8083"
+    networks:
+      - microservices-network
+
+  api.gateway:
+    build:
+      context: Banco_Microservicios-master/api.gateway
+      dockerfile: Dockerfile
+    container_name: api.gateway
+    environment:
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=https://localhost:8761/eureka/
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql-apigateway:3306/gatewaybd
+      - SPRING_DATASOURCE_USERNAME=gateway_user
+      - SPRING_DATASOURCE_PASSWORD=gateway_pass
+    depends_on:
+      - eureka-server
+      - mysql-apigateway
+    ports:
+      - "8080:8080"
+    networks:
+      - microservices-network
+
+  mysql-banco1:
+    image: mysql:8.0
+    container_name: mysql-banco1
+    environment:
+      - MYSQL_DATABASE=banco1_db
+      - MYSQL_USER=banco1_user
+      - MYSQL_PASSWORD=banco1_pass
+      - MYSQL_ROOT_PASSWORD=root_pass
+    ports:
+      - "3307:3306"
+    networks:
+      - microservices-network
+
+  mysql-banco2:
+    image: mysql:8.0
+    container_name: mysql-banco2
+    environment:
+      - MYSQL_DATABASE=banco2_db
+      - MYSQL_USER=banco2_user
+      - MYSQL_PASSWORD=banco2_pass
+      - MYSQL_ROOT_PASSWORD=root_pass
+    ports:
+      - "3308:3306"
+    networks:
+      - microservices-network
+
+  mysql-banco3:
+    image: mysql:8.0
+    container_name: mysql-banco3
+    environment:
+      - MYSQL_DATABASE=banco3_db
+      - MYSQL_USER=banco3_user
+      - MYSQL_PASSWORD=banco3_pass
+      - MYSQL_ROOT_PASSWORD=root_pass
+    ports:
+      - "3309:3306"
+    networks:
+      - microservices-network
+  mysql-apigateway:
+    image: mysql:8.0
+    container_name: mysql-apigateway
+    environment:
+      - MYSQL_DATABASE=gatewaybd
+      - MYSQL_USER=gateway_user
+      - MYSQL_PASSWORD=gateway_pass
+      - MYSQL_ROOT_PASSWORD=root_pass
+    ports:
+      - "3310:3306"
+    networks:
+      - microservices-network
+
+  frontend1:
+    build:
+      context: frontend_sistema/frontend_sistema_bancario
+      dockerfile: Dockerfile
+    container_name: frontend1
+    ports:
+      - "3000:3000"
+    depends_on:
+      - banco1
+    networks:
+      - microservices-network
+
+  frontend2:
+    build:
+      context: frontend_sistema/frontend_sistema_bancario2
+      dockerfile: Dockerfile
+    container_name: frontend2
+    ports:
+      - "3001:3001"
+    depends_on:
+      - banco2
+    networks:
+      - microservices-network
+
+  frontend3:
+    build:
+      context: frontend_sistema/frontend_sistema_bancario3
+      dockerfile: Dockerfile
+    container_name: frontend3
+    ports:
+      - "3002:3002"
+    depends_on:
+      - banco3
+    networks:
+      - microservices-network
+networks:
+  microservices-network:
+    driver: bridge

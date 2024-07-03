@@ -1,0 +1,6 @@
+com\gateway\controller\RouteController.class
+com\gateway\model\RouteDefinition.class
+com\gateway\GatewayApplication.class
+com\gateway\repository\RouteDefinitionRepository.class
+com\gateway\service\EnrutamientoDinamicoService.class
+com\gateway\config\ApplicationRestart.class

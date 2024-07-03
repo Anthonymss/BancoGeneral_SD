@@ -1,0 +1,295 @@
+{
+	"info": {
+		"_postman_id": "0ad50445-c906-4a66-b396-7f224ed68f34",
+		"name": "Banco_SD",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "33910529"
+	},
+	"item": [
+		{
+			"name": "probando REMOTO",
+			"item": [
+				{
+					"name": "metodo Remoto",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8081/bank-to-bank/banco2",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8081",
+							"path": [
+								"bank-to-bank",
+								"banco2"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "da los nombres clave de los bancos en linea",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8081/microservicios",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8081",
+							"path": [
+								"microservicios"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "OPERACIONES INTERBANCARIAS",
+			"item": [
+				{
+					"name": "TRANSFERENCIA  BANK TO BANK",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"tipo\": \"TRANSACCION_INTERBANCARIA\",\r\n    \"monto\": 99.00,\r\n    \"cuentaOrigenNumero\": \"10001111AAA\",\r\n    \"cuentaDestinoNumero\": \"20002222BBB\",\r\n    \"origenBanco\": \"BancoOrigenprueba\",\r\n    \"destinoBanco\": \"BancoDestinoprueba\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8081/transacciones/operacionInterbancaria/banco2",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8081",
+							"path": [
+								"transacciones",
+								"operacionInterbancaria",
+								"banco2"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "firstRegister ->crea al cliente y su cuenta al mismo tiempo",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"nombre\": \"Anthony\",\r\n    \"apellido\":\"Choque\",\r\n    \"email\": \"anthony@gmail.com\",\r\n    \"dni\":\"73186316\",\r\n    \"telefono\": \"123456789\",\r\n    \"password\": \"password123\",\r\n    \"idBanco\": 1\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8081/Register/firstRegister",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8081",
+					"path": [
+						"Register",
+						"firstRegister"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "CREAR CUENTA",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"clienteId\":7,\r\n    \"tipocuenta\":\"CUENTA_AHORROS\", // CUENTA_AHORROS, CUENTA_INVERSIONES\r\n    \"password\":\"abc\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8081/Register/crearCuenta",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8081",
+					"path": [
+						"Register",
+						"crearCuenta"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "crear cliente",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"dni\":\"73128313\",\r\n    \"nombre\":\"prueba123\",\r\n    \"email\":\"prueba@gmail.com\",\r\n    \"telefono\":\"91232324\"\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8081/Register/crearCliente",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8081",
+					"path": [
+						"Register",
+						"crearCliente"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Login con Ncuenta",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"numeroCuenta\":\"10001111AAA\",\r\n    \"dni\":\"733912311\",\r\n    \"password\":\"password1\"\r\n}\r\n//ahora es flexible, puedes mandar alguno de los 2 como null,asi si no hay numero de cuenta , inicia sesion con el Dni y viceversa ",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8081/Login",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8081",
+					"path": [
+						"Login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Realizar transaccion",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"tipo\": \"TRANSFERENCIA\",\r\n    \"monto\": 99.00,\r\n    \"cuentaOrigenNumero\": \"E11ed4890e\",\r\n    \"cuentaDestinoNumero\": \"E11ed4890e\"\r\n}\r\n/*\r\n    ENVIAR EN ambos campos el mismo numero xd, aun falta que sea flexible dentro de cada banco\r\n*/",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8081/transacciones/operacion",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8081",
+					"path": [
+						"transacciones",
+						"operacion"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "DATOS DE LA CUENTA",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8081/cuentas/10001111AAA",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8081",
+					"path": [
+						"cuentas",
+						"10001111AAA"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "lista de Transacciones por NCuenta",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8081/transacciones/datos/E11ed4890e",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8081",
+					"path": [
+						"transacciones",
+						"datos",
+						"E11ed4890e"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "traer info de todas las cuentas",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8081/cuentas/infocuentas/73186316",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8081",
+					"path": [
+						"cuentas",
+						"infocuentas",
+						"73186316"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

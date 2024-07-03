@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Definiciones de Ruta</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+<div class="container">
+    <h1 class="mt-5">Definiciones de Ruta</h1>
+    <table class="table table-striped mt-3">
+        <thead>
+        <tr>
+            <th>Route ID</th>
+            <th>URI</th>
+            <th>Predicates</th>
+            <th>Filters</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="route : ${routes}">
+            <td th:text="${route.routeId}"></td>
+            <td th:text="${route.uri}"></td>
+            <td th:text="${route.predicates}"></td>
+            <td th:text="${route.filters}"></td>
+        </tr>
+        </tbody>
+    </table>
+    <form th:action="@{/routes}" th:object="${newRoute}" method="post">
+        <div class="form-group">
+            <label for="routeId">Route ID</label>
+            <input required type="text" class="form-control" id="routeId" th:field="*{routeId}" placeholder="Ingresa Route ID">
+        </div>
+        <div class="form-group">
+            <label for="uri">URI</label>
+            <input required type="text" class="form-control" id="uri" th:field="*{uri}" placeholder="Ingresa URI">
+        </div>
+        <button type="submit" class="btn btn-primary">Guardar Ruta</button>
+    </form>
+</div>
+</body>
+</html>
